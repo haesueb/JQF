@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.berkeley.cs.jqf.fuzz.ei.ExecutionIndexingGuidance;
+import edu.berkeley.cs.jqf.fuzz.ei.PerfZestGuidance;
 import edu.berkeley.cs.jqf.fuzz.ei.ZestGuidance;
 import edu.berkeley.cs.jqf.fuzz.guidance.GuidanceException;
 import edu.berkeley.cs.jqf.fuzz.junit.GuidedFuzzing;
@@ -365,6 +366,9 @@ public class FuzzGoal extends AbstractMojo {
                     System.setProperty("jqf.tracing.TRACE_GENERATORS", "true");
                     System.setProperty("jqf.tracing.MATCH_CALLEE_NAMES", "true");
                     guidance = new ExecutionIndexingGuidance(targetName, duration, trials, resultsDir, seedsDir, rnd);
+                    break;
+                case "perf":
+                    guidance = new PerfZestGuidance(targetName, duration, trials, resultsDir, seedsDir, rnd);
                     break;
                 default:
                     throw new MojoExecutionException("Unknown fuzzing engine: " + engine);

@@ -188,6 +188,19 @@ public class FastNonCollidingCoverage extends FastCoverageListener.Default imple
         return changed;
     }
 
+    @Override
+    public String newMaxEdgeHits(ICoverage that) {
+        return "false";
+    }
+
+    public int getTotalMax(){
+        return -1;
+    }
+
+    public boolean totalBranchHits(ICoverage that){
+        return false;
+    }
+
     /** Returns a hash code of the edge counts in the coverage map. */
     @Override
     public int hashCode() {

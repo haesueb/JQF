@@ -54,6 +54,8 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
     /** The coverage counts for each edge. */
     private final Counter counter = new NonZeroCachingCounter(COVERAGE_MAP_SIZE);
 
+    private int totalMax;
+
     /** Creates a new coverage map. */
     public Coverage() {
 
@@ -207,6 +209,43 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
             }
         }
         return changed;
+    }
+
+    public String newMaxEdgeHits(ICoverage that){
+        boolean newMax = false;
+        String max = "";
+        if (that.getCounter().hasNonZeros()) {
+            for (int idx = 0; idx < COVERAGE_MAP_SIZE; idx++) {
+                int before = this.counter.getAtIndex(idx);
+                int after = that.getCounter().getAtIndex(idx);
+                if (after > (before)) {
+//                    max += " ind:" + idx + " before:" + before + " after:" + after;
+                    max += " ind:" + idx +" ratio:" + (double) after / before;
+                    this.counter.setAtIndex(idx, after);
+                    newMax = true;
+                }
+            }
+        }
+        return max;
+//        return newMax;
+    }
+
+    public int getTotalMax(){
+        return totalMax;
+    }
+
+    public boolean totalBranchHits(ICoverage that){
+        int total = 0;
+        if (that.getCounter().hasNonZeros()) {
+            for (int idx = 0; idx < COVERAGE_MAP_SIZE; idx++) {
+                total += that.getCounter().getAtIndex(idx);
+            }
+        }
+        boolean ret = total > totalMax;
+        if (ret) {
+            this.totalMax = total;
+        }
+        return ret;
     }
 
     /** Returns a hash code of the edge counts in the coverage map. */

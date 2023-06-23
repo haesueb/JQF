@@ -31,7 +31,7 @@ public class GrepTest {
         String out = Unix4j.fromString(input1).grep(input2).toStringResult();
         // pattern = input1
 
-        System.out.println(out);
+//        System.out.println(out);
 
         boolean has = (out.equals(""));
         // if it contains, then the output contains smth, which means it's not equal to ""

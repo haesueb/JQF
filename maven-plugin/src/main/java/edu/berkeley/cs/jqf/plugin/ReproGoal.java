@@ -171,6 +171,13 @@ public class ReproGoal extends AbstractMojo {
     @Parameter(property="dumpArgsDir")
     private String dumpArgsDir;
 
+    /**
+     * Whether to log the trace.
+     *
+     */
+    @Parameter(property="traceDir")
+    private String traceDir;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         ClassLoader loader;
@@ -218,7 +225,11 @@ public class ReproGoal extends AbstractMojo {
         }
 
         try {
-            guidance = new ReproGuidance(inputFile, null);
+            if (traceDir != null) {
+                guidance = new ReproGuidance(inputFile, new File(traceDir));
+            } else {
+                guidance = new ReproGuidance(inputFile, null);
+            }
             result = GuidedFuzzing.run(testClassName, testMethod, loader, guidance, out);
         } catch (ClassNotFoundException e) {
             throw new MojoExecutionException("Could not load test class", e);

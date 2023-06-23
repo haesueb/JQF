@@ -47,6 +47,12 @@ public interface ICoverage<T extends Counter> {
      */
     boolean updateBits(ICoverage that);
 
+    String newMaxEdgeHits(ICoverage that);
+
+    boolean totalBranchHits(ICoverage that);
+
+    int getTotalMax();
+
     /**
      * Returns a hash code of the list of edges that have been covered at least once.
      *
