@@ -5,6 +5,8 @@ import edu.berkeley.cs.jqf.fuzz.guidance.Result;
 import edu.berkeley.cs.jqf.fuzz.util.IOUtils;
 import edu.berkeley.cs.jqf.instrument.tracing.FastCoverageSnoop;
 import janala.instrument.FastCoverageListener;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.TestClass;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,7 +99,7 @@ public class PerfZestGuidance extends ZestGuidance {
         String edgeHits = totalCoverage.newMaxEdgeHits(runCoverage);
 
         if (result == Result.SUCCESS) {
-            validCoverage.updateBits(runCoverage);
+            validCoverage.newMaxEdgeHits(runCoverage);
         }
 
         // Coverage after
@@ -110,13 +112,13 @@ public class PerfZestGuidance extends ZestGuidance {
         // Possibly save input
         List<String> reasonsToSave = new ArrayList<>();
 
-        int before = totalCoverage.getTotalMax();
+//        int before = totalCoverage.getTotalMax();
 
         // save if total branch hits is larger
         // change per input instead of overall ? new variable to keep that
         if(totalCoverage.totalBranchHits(runCoverage)){
-            int after = totalCoverage.getTotalMax();
-            reasonsToSave.add("+total. before: " + before + " after: " + after);
+//            int after = totalCoverage.getTotalMax();
+            reasonsToSave.add("+total");
         }
 
         // Save if new total coverage found
@@ -136,5 +138,6 @@ public class PerfZestGuidance extends ZestGuidance {
 
         return reasonsToSave;
     }
+
 
 }

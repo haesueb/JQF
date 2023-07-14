@@ -748,7 +748,6 @@ public class ZestGuidance implements Guidance {
             }
 
             if (result == Result.SUCCESS || (result == Result.INVALID && !SAVE_ONLY_VALID)) {
-
                 // Compute a list of keys for which this input can assume responsibility.
                 // Newly covered branches are always included.
                 // Existing branches *may* be included, depending on the heuristics used.

@@ -49,6 +49,10 @@ public interface ICoverage<T extends Counter> {
 
     String newMaxEdgeHits(ICoverage that);
 
+    boolean newMaxEdgeDiff(ICoverage run, ICoverage runConfig);
+
+    boolean totalBranchDiff(ICoverage run, ICoverage runConfig);
+
     boolean totalBranchHits(ICoverage that);
 
     int getTotalMax();

@@ -193,11 +193,20 @@ public class FastNonCollidingCoverage extends FastCoverageListener.Default imple
         return "false";
     }
 
+    @Override
+    public boolean newMaxEdgeDiff(ICoverage run, ICoverage runConfig){
+        return false;
+    }
+
     public int getTotalMax(){
         return -1;
     }
 
     public boolean totalBranchHits(ICoverage that){
+        return false;
+    }
+
+    public boolean totalBranchDiff(ICoverage run, ICoverage runConfig){
         return false;
     }
 

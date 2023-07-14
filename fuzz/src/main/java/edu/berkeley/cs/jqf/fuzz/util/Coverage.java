@@ -41,6 +41,8 @@ import org.eclipse.collections.api.iterator.IntIterator;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
+import static java.lang.Math.abs;
+
 /**
  * Utility class to collect branch and function coverage
  *
@@ -61,6 +63,12 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
 
     }
 
+//    public Coverage(ICoverage cov) {
+//        for (int idx = 0; idx < COVERAGE_MAP_SIZE; idx++) {
+//            this.counter.setAtIndex(idx, cov.counter.getAtIndex(idx));
+//        }
+//    }
+
     /**
      * Creates a copy of an this coverage map.
      *
@@ -69,6 +77,7 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
         Coverage ret = new Coverage();
         for (int idx = 0; idx < COVERAGE_MAP_SIZE; idx++) {
             ret.counter.setAtIndex(idx, this.counter.getAtIndex(idx));
+//            System.out.println("copied: " + this.counter.getAtIndex(idx));
         }
         return ret;
     }
@@ -230,6 +239,24 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
 //        return newMax;
     }
 
+    public boolean newMaxEdgeDiff (ICoverage colSlow, ICoverage covFast){
+        boolean newMax = false;
+//        String max = "";
+        if (colSlow.getCounter().hasNonZeros() || covFast.getCounter().hasNonZeros()) {
+            for (int idx = 0; idx < COVERAGE_MAP_SIZE; idx++) {
+                int oldDiff = this.counter.getAtIndex(idx);
+                int slowAfter = colSlow.getCounter().getAtIndex(idx);
+                int fastAfter = covFast.getCounter().getAtIndex(idx);
+                if (abs(slowAfter - fastAfter) > (oldDiff)) {
+                    this.counter.setAtIndex(idx, abs(slowAfter - fastAfter));
+                    newMax = true;
+                }
+            }
+        }
+//        return max;
+        return newMax;
+    }
+
     public int getTotalMax(){
         return totalMax;
     }
@@ -244,6 +271,22 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
         boolean ret = total > totalMax;
         if (ret) {
             this.totalMax = total;
+        }
+        return ret;
+    }
+
+    public boolean totalBranchDiff(ICoverage covSlow, ICoverage covFast){
+        int totalSlow = 0;
+        int totalFast = 0;
+        if (covSlow.getCounter().hasNonZeros() || covFast.getCounter().hasNonZeros()) {
+            for (int idx = 0; idx < COVERAGE_MAP_SIZE; idx++) {
+                totalSlow += covSlow.getCounter().getAtIndex(idx);
+                totalFast += covFast.getCounter().getAtIndex(idx);
+            }
+        }
+        boolean ret = (totalSlow - totalFast) > totalMax;
+        if (ret) {
+            this.totalMax = abs(totalSlow - totalFast);
         }
         return ret;
     }
