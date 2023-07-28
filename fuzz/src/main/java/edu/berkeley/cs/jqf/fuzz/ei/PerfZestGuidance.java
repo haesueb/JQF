@@ -1,12 +1,6 @@
 package edu.berkeley.cs.jqf.fuzz.ei;
 
-import edu.berkeley.cs.jqf.fuzz.afl.AFLGuidance;
 import edu.berkeley.cs.jqf.fuzz.guidance.Result;
-import edu.berkeley.cs.jqf.fuzz.util.IOUtils;
-import edu.berkeley.cs.jqf.instrument.tracing.FastCoverageSnoop;
-import janala.instrument.FastCoverageListener;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.TestClass;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,7 +110,7 @@ public class PerfZestGuidance extends ZestGuidance {
 
         // save if total branch hits is larger
         // change per input instead of overall ? new variable to keep that
-        if(totalCoverage.totalBranchHits(runCoverage)){
+        if(totalCoverage.totalNonZeroBranchHits(runCoverage)){
 //            int after = totalCoverage.getTotalMax();
             reasonsToSave.add("+total");
         }

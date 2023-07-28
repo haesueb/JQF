@@ -6,6 +6,7 @@ import edu.berkeley.cs.jqf.fuzz.Fuzz;
 import edu.berkeley.cs.jqf.fuzz.JQF;
 import edu.berkeley.cs.jqf.fuzz.ei.FrameworkProvided;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kohsuke.args4j.Argument;
@@ -27,23 +28,13 @@ import java.nio.file.Paths;
 
 @RunWith(JQF.class)
 public class GrepTest {
-
     private Unix4jCommandBuilder unix4j;
     Path path = Paths.get("/Users/haesueb/Desktop/JQF-GrepTest/examples/input2.txt");
     @Fuzz
     public void testWithStringGenerator(@From(AlphaStringGenerator.class) String input1, @From(AlphaStringGenerator.class) String input2){
 
-//
-//        input1 = "a";
-//        input2 = "aa";
-
-//        System.out.println("input1: " + input1);
-//        System.out.println("input2: " + input2);
 
         boolean contain = input2.contains(input1);
-        // input 2 has input 1 within it
-
-        // need to clear the file, maybe it's easier to create a new file and then delete it every time?
 
         File input2file = new File("input2.txt");
 
@@ -51,15 +42,12 @@ public class GrepTest {
         try {
             Files.write(path, arr);
         } catch (IOException ex) {
-            // Print message as exception occurred when
-            // invalid path of local machine is passed
             System.out.print("Invalid Path");
         }
 
         assumeTrue(contain);
 
 
-//        String out = Unix4j.fromString(input1).grep(input2).toStringResult();
         String out = Unix4j.grep(input1, input2file).toStringResult();
         // out is a string which contains the lines / words of input 2 which contains input 1
 
@@ -70,46 +58,76 @@ public class GrepTest {
             has = false;
         }
 
-//        System.out.println("contain: \"" + contain + "\"");
-//        System.out.println("out: \"" + out + "\"");
-
         assertFalse(has);
-
         input2file.delete();
     }
 
-    @Fuzz
+    @Fuzz (repro = "examples/target/fuzz-results/edu.berkeley.cs.jqf.examples.unix4j.GrepTest/configTest/failures/id_000000")
+    //ArbitraryLengthStringGenerator
+    // a repro will let me see the number of branches (this is b/c the vars you can see with the debugger)
     public void configTest(@From(AlphaStringGenerator.class) String input1, @From(AlphaStringGenerator.class) String input2, boolean config){
-
+        Assume.assumeFalse(input1.isEmpty());
+        // try {
+        // grep(s1, s2); }
+        // catch (RegexException e) {
+        // Assume.assumeNoException(e);
+        //
+//        Assume.assumeNoException();
         if (config){
-            // out is a string which contains the lines / words of input 2 which contains input 1
-
             boolean contain = input2.contains(input1);
-            // input 2 has input 1 within it
+
+            File input2file = new File("input2.txt");
+
+            byte[] arr = input2.getBytes();
+            try {
+                Files.write(path, arr);
+            } catch (IOException ex) {
+                System.out.print("Invalid Path");
+            }
 
             assumeTrue(contain);
-            String out = Unix4j.fromString(input1).grep(Grep.Options.c, input2).toStringResult();
+
+
+            String out = Unix4j.grep(Grep.Options.F, input1, input2file).toStringResult();
             // out is a string which contains the lines / words of input 2 which contains input 1
 
             boolean has = (out.equals(""));
-            // opposite because of the option
+            // to prove that grep is working correctly, we want the string out to be non-empty, thus we want bool as to be false
+
+            if(input1.equals("") || input2.equals("")){
+                has = false;
+            }
 
             assertFalse(has);
+            input2file.delete();
         } else {
 
             boolean contain = input2.contains(input1);
-            // input 2 has input 1 within it
+
+            File input2file = new File("input2.txt");
+
+            byte[] arr = input2.getBytes();
+            try {
+                Files.write(path, arr);
+            } catch (IOException ex) {
+                System.out.print("Invalid Path");
+            }
 
             assumeTrue(contain);
-            String out = Unix4j.fromString(input1).grep(input2).toStringResult();
+
+
+            String out = Unix4j.grep(input1, input2file).toStringResult();
             // out is a string which contains the lines / words of input 2 which contains input 1
-                // if this is words which contain then i understand why there's the error it's throwing, else it doesn't make sense
 
             boolean has = (out.equals(""));
-            // if input 2 contains input 1, then the string out is not empty, which means it's not equal to ""
+            // to prove that grep is working correctly, we want the string out to be non-empty, thus we want bool as to be false
+
+            if(input1.equals("") || input2.equals("")){
+                has = false;
+            }
 
             assertFalse(has);
-            // to prove that grep is working correctly, we want the string out to be non-empty, thus we want bool as to be false
+            input2file.delete();
         }
     }
 }

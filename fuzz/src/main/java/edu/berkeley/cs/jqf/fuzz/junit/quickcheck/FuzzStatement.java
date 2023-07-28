@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.mchange.util.AssertException;
 import com.pholser.junit.quickcheck.generator.GenerationStatus;
 import com.pholser.junit.quickcheck.generator.Generator;
 import com.pholser.junit.quickcheck.internal.ParameterTypeContext;
@@ -159,6 +160,10 @@ public class FuzzStatement extends Statement {
                 } catch (TimeoutException e) {
                     result = TIMEOUT;
                     error = e;
+                } catch (AssertException e) { // want this to catch an assertion exception
+                    result = FAILURE;
+                    error = e;
+                    failures.add(e);
                 } catch (Throwable e) {
 
                     // Check if this exception was expected

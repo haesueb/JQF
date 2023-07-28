@@ -58,6 +58,8 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
 
     private int totalMax;
 
+    private int negMax;
+
     /** Creates a new coverage map. */
     public Coverage() {
 
@@ -247,8 +249,8 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
                 int oldDiff = this.counter.getAtIndex(idx);
                 int slowAfter = colSlow.getCounter().getAtIndex(idx);
                 int fastAfter = covFast.getCounter().getAtIndex(idx);
-                if (abs(slowAfter - fastAfter) > (oldDiff)) {
-                    this.counter.setAtIndex(idx, abs(slowAfter - fastAfter));
+                if ((slowAfter - fastAfter) > (oldDiff)) {
+                    this.counter.setAtIndex(idx, (slowAfter - fastAfter));
                     newMax = true;
                 }
             }
@@ -261,7 +263,7 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
         return totalMax;
     }
 
-    public boolean totalBranchHits(ICoverage that){
+    public boolean totalNonZeroBranchHits(ICoverage that){
         int total = 0;
         if (that.getCounter().hasNonZeros()) {
             for (int idx = 0; idx < COVERAGE_MAP_SIZE; idx++) {
@@ -286,9 +288,40 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
         }
         boolean ret = (totalSlow - totalFast) > totalMax;
         if (ret) {
-            this.totalMax = abs(totalSlow - totalFast);
+            this.totalMax = (totalSlow - totalFast);
         }
         return ret;
+    }
+
+    public boolean totalBranchOppositeMax(ICoverage covSlow, ICoverage covFast){
+        int totalSlow = 0;
+        int totalFast = 0;
+        if (covSlow.getCounter().hasNonZeros() || covFast.getCounter().hasNonZeros()) {
+            for (int idx = 0; idx < COVERAGE_MAP_SIZE; idx++) {
+                totalSlow += covSlow.getCounter().getAtIndex(idx);
+                totalFast += covFast.getCounter().getAtIndex(idx);
+            }
+        }
+        if( (totalFast - totalSlow) < 0 ){
+            if (totalFast-totalSlow < negMax){
+                negMax = totalFast-totalSlow;
+                // can i make it throw an exception to be seen as a failure?
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean totalBranchOpposite(ICoverage covSlow, ICoverage covFast){
+        int totalSlow = 0;
+        int totalFast = 0;
+        if (covSlow.getCounter().hasNonZeros() || covFast.getCounter().hasNonZeros()) {
+            for (int idx = 0; idx < COVERAGE_MAP_SIZE; idx++) {
+                totalSlow += covSlow.getCounter().getAtIndex(idx);
+                totalFast += covFast.getCounter().getAtIndex(idx);
+            }
+        }
+        return ( (totalFast - totalSlow) < 0 );
     }
 
     /** Returns a hash code of the edge counts in the coverage map. */

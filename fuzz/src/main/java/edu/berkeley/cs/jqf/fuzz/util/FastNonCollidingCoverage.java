@@ -193,6 +193,14 @@ public class FastNonCollidingCoverage extends FastCoverageListener.Default imple
         return "false";
     }
 
+    public boolean totalBranchOppositeMax(ICoverage slow, ICoverage fast){
+        return false;
+    }
+
+    public boolean totalBranchOpposite(ICoverage slow, ICoverage fast){
+        return false;
+    }
+
     @Override
     public boolean newMaxEdgeDiff(ICoverage run, ICoverage runConfig){
         return false;
@@ -202,7 +210,7 @@ public class FastNonCollidingCoverage extends FastCoverageListener.Default imple
         return -1;
     }
 
-    public boolean totalBranchHits(ICoverage that){
+    public boolean totalNonZeroBranchHits(ICoverage that){
         return false;
     }
 

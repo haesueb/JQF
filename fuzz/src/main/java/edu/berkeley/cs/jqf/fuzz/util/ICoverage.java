@@ -53,7 +53,11 @@ public interface ICoverage<T extends Counter> {
 
     boolean totalBranchDiff(ICoverage run, ICoverage runConfig);
 
-    boolean totalBranchHits(ICoverage that);
+    boolean totalNonZeroBranchHits(ICoverage that);
+
+    boolean totalBranchOppositeMax(ICoverage slow, ICoverage fast);
+
+    boolean totalBranchOpposite(ICoverage slow, ICoverage fast);
 
     int getTotalMax();
 

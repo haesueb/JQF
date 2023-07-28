@@ -2,7 +2,6 @@ package edu.berkeley.cs.jqf.fuzz.ei;
 
 import edu.berkeley.cs.jqf.fuzz.guidance.Result;
 import edu.berkeley.cs.jqf.fuzz.junit.TrialRunner;
-import edu.berkeley.cs.jqf.fuzz.util.Coverage;
 import edu.berkeley.cs.jqf.fuzz.util.CoverageFactory;
 import edu.berkeley.cs.jqf.fuzz.util.ICoverage;
 import org.junit.runners.model.FrameworkMethod;
@@ -14,6 +13,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static org.junit.Assert.assertFalse;
 
 public class PerfConfigGuidance extends PerfZestGuidance {
 
@@ -44,10 +45,14 @@ public class PerfConfigGuidance extends PerfZestGuidance {
         args[args.length - 1] = false;
         new TrialRunner(testClass.getJavaClass(), method, args).run();
 
+
+        assertFalse(totalCoverage.totalBranchOpposite(runCoverage,newCoverage));
+        // do i need to make it so this throws something?
+
     }
 
     @Override
-    protected List<String> checkSavingCriteriaSatisfied(Result result){
+    protected List<String> checkSavingCriteriaSatisfied(Result result) {
         List<String> reasonsToSave = new ArrayList<>();
 
         // updating the total and valid coverage "arrays" with new values of maximum edge count differences
@@ -72,20 +77,21 @@ public class PerfConfigGuidance extends PerfZestGuidance {
         int validNonZeroAfter = validCoverage.getNonZeroCount();
 
         // Save if new total coverage found
-        if (nonZeroAfter > nonZeroBefore) {
-            reasonsToSave.add("+cov");
-        }
-
-        // Save if new valid coverage is found (done the same as coverage, just with those inputs which result in successes)
-        if (this.validityFuzzing && validNonZeroAfter > validNonZeroBefore) {
-            reasonsToSave.add("+valid");
-        }
+//        if (nonZeroAfter > nonZeroBefore) {
+//            reasonsToSave.add("+cov");
+//        }
+//
+//        // Save if new valid coverage is found (done the same as coverage, just with those inputs which result in successes)
+//        if (this.validityFuzzing && validNonZeroAfter > validNonZeroBefore) {
+//            reasonsToSave.add("+valid");
+//        }
 
         // want to check if there's a new total of differences
-        if(totalCoverage.totalBranchDiff(runCoverage, runCoverage)){
+        if(totalCoverage.totalBranchDiff(runCoverage, newCoverage)){
             reasonsToSave.add("+total");
         }
 
+        // slow then fast
         boolean newDiff = totalCoverage.newMaxEdgeDiff(runCoverage, newCoverage);
 
         // check if there's new difference between the two types
@@ -93,6 +99,11 @@ public class PerfConfigGuidance extends PerfZestGuidance {
             reasonsToSave.add("+diff");
         }
 
+        boolean negDiff = totalCoverage.totalBranchOppositeMax(runCoverage,newCoverage);
+
+        if (negDiff){
+            reasonsToSave.add("+negDiff");
+        }
 
 
         return reasonsToSave;
