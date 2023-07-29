@@ -40,6 +40,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import edu.berkeley.cs.jqf.fuzz.junit.GuidedFuzzing;
+import edu.berkeley.cs.jqf.fuzz.repro.ReproConfigGuidance;
 import edu.berkeley.cs.jqf.fuzz.repro.ReproGuidance;
 import edu.berkeley.cs.jqf.instrument.InstrumentingClassLoader;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -226,9 +227,9 @@ public class ReproGoal extends AbstractMojo {
 
         try {
             if (traceDir != null) {
-                guidance = new ReproGuidance(inputFile, new File(traceDir));
+                guidance = new ReproConfigGuidance(inputFile, new File(traceDir));
             } else {
-                guidance = new ReproGuidance(inputFile, null);
+                guidance = new ReproConfigGuidance(inputFile, null);
             }
             result = GuidedFuzzing.run(testClassName, testMethod, loader, guidance, out);
         } catch (ClassNotFoundException e) {
