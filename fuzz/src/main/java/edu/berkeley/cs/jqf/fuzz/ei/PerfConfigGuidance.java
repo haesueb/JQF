@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class PerfConfigGuidance extends PerfZestGuidance {
 
@@ -45,9 +46,15 @@ public class PerfConfigGuidance extends PerfZestGuidance {
         args[args.length - 1] = false;
         new TrialRunner(testClass.getJavaClass(), method, args).run();
 
+        String opp = totalCoverage.totalBranchOpposite(runCoverage,newCoverage);
 
-        assertFalse(totalCoverage.totalBranchOpposite(runCoverage,newCoverage));
+        if(!opp.equals("")){
+            infoLog(opp);
+        }
+        assertTrue(opp.equals(""));
         // do i need to make it so this throws something?
+        // should this be true or false?
+        // want it to throw when odd behavior, odd behavior is shown when opp is non zero, so throw when opp =/= nothing, thus assert True
 
     }
 
@@ -139,6 +146,3 @@ public class PerfConfigGuidance extends PerfZestGuidance {
         infoLog("\n\n\n");
     }
 }
-
-// do i need to override the computeResponsibilities as well? what are responsibilities
-// another thing, i didn't consider valid coverage here at all, should i do that?

@@ -28,10 +28,7 @@
  */
 package edu.berkeley.cs.jqf.fuzz.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 import edu.berkeley.cs.jqf.instrument.tracing.events.BranchEvent;
 import edu.berkeley.cs.jqf.instrument.tracing.events.CallEvent;
@@ -312,16 +309,19 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
         return false;
     }
 
-    public boolean totalBranchOpposite(ICoverage covSlow, ICoverage covFast){
-        int totalSlow = 0;
-        int totalFast = 0;
+    public String totalBranchOpposite(ICoverage covSlow, ICoverage covFast){
+        int totalSlow = 0; //should be larger branch count
+        int totalFast = 0; //smaller branch count
         if (covSlow.getCounter().hasNonZeros() || covFast.getCounter().hasNonZeros()) {
             for (int idx = 0; idx < COVERAGE_MAP_SIZE; idx++) {
                 totalSlow += covSlow.getCounter().getAtIndex(idx);
                 totalFast += covFast.getCounter().getAtIndex(idx);
             }
         }
-        return ( (totalFast - totalSlow) < 0 );
+        if ((totalFast - totalSlow) > 0){
+            return "Fast: " + totalFast + " Slow:" + totalSlow;
+        }
+        return "";
     }
 
     /** Returns a hash code of the edge counts in the coverage map. */

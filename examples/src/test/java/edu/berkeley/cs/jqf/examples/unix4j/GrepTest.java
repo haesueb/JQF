@@ -62,11 +62,12 @@ public class GrepTest {
         input2file.delete();
     }
 
-    @Fuzz (repro = "examples/target/fuzz-results/edu.berkeley.cs.jqf.examples.unix4j.GrepTest/configTest/failures/id_000000")
+    @Fuzz (repro = "target/fuzz-results/edu.berkeley.cs.jqf.examples.unix4j.GrepTest/configTest/failures/id_000000")
     //ArbitraryLengthStringGenerator
     // a repro will let me see the number of branches (this is b/c the vars you can see with the debugger)
     public void configTest(@From(AlphaStringGenerator.class) String input1, @From(AlphaStringGenerator.class) String input2, boolean config){
-        Assume.assumeFalse(input1.isEmpty());
+//        Assume.assumeFalse(input1.isEmpty());
+//        Assume.assumeFalse(input1.equals(input2));
         // try {
         // grep(s1, s2); }
         // catch (RegexException e) {
@@ -88,7 +89,8 @@ public class GrepTest {
             assumeTrue(contain);
 
 
-            String out = Unix4j.grep(Grep.Options.F, input1, input2file).toStringResult();
+            String out = Unix4j.grep(input1, input2file).toStringResult();
+//            String out = Unix4j.grep(Grep.Options.F, input1, input2file).toStringResult();
             // out is a string which contains the lines / words of input 2 which contains input 1
 
             boolean has = (out.equals(""));
