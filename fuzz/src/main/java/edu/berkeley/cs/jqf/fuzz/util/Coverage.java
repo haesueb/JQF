@@ -299,8 +299,8 @@ public class Coverage implements TraceEventVisitor, ICoverage<Counter> {
                 totalFast += covFast.getCounter().getAtIndex(idx);
             }
         }
-        if( (totalFast - totalSlow) < 0 ){
-            if (totalFast-totalSlow < negMax){
+        if( (totalFast - totalSlow) > 0 ){
+            if (totalFast-totalSlow > negMax){
                 negMax = totalFast-totalSlow;
                 // can i make it throw an exception to be seen as a failure?
                 return true;

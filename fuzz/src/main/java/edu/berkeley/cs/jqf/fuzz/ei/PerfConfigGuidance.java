@@ -36,7 +36,9 @@ public class PerfConfigGuidance extends PerfZestGuidance {
 
         args[args.length - 1] = true;
         new TrialRunner(testClass.getJavaClass(), method, args).run();
+        newCoverage.clear();
         newCoverage = runCoverage.copy(); // is it total or run here?
+        // with grep, the true means that it runs with the configuration, which is the fjixed string
 
         // should this be an interface or a coverage?
         // try to print things
@@ -45,6 +47,7 @@ public class PerfConfigGuidance extends PerfZestGuidance {
 
         args[args.length - 1] = false;
         new TrialRunner(testClass.getJavaClass(), method, args).run();
+        // for the grep this is the regex, which is supposed to be slower
 
         String opp = totalCoverage.totalBranchOpposite(runCoverage,newCoverage);
 

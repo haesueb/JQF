@@ -74,6 +74,10 @@ public class GrepTest {
         // Assume.assumeNoException(e);
         //
 //        Assume.assumeNoException();
+        input1 = "k";
+        input2 = "ohgkdbimckdcwi";
+        config = true;
+
         if (config){
             boolean contain = input2.contains(input1);
 
@@ -89,7 +93,7 @@ public class GrepTest {
             assumeTrue(contain);
 
 
-            String out = Unix4j.grep(input1, input2file).toStringResult();
+            String out = Unix4j.grep(Grep.Options.F, input1, input2file).toStringResult();
 //            String out = Unix4j.grep(Grep.Options.F, input1, input2file).toStringResult();
             // out is a string which contains the lines / words of input 2 which contains input 1
 
