@@ -133,6 +133,14 @@ If it's some sort of fuzzing emergency you can always send an email to the main 
 If you find bugs with JQF and you comfortable with sharing, We would be happy to add them to this list. 
 Please send a PR for README.md with a link to the bug/cve you found.
 
+## Haesue Edits/what makes this JQF different
+
+I spent the summer of 2023 working on creating the perffuzz section of this fuzzer, so here is an overview of how it works. 
+1) Use "-config perffuzz" to use it.
+2) Make sure to create a testing function which takes in a boolean value as the last input. That boolean value should determine within the test if the program runs with or without a configuration turned on. This currently has to be hard coded into the testing function.
+3) You can change, within the perffuzz file [insert location] what is considered by this fuzzer as interesting behavior. You can add more branches hit or more unique branches. Currently it is set to a higher ratio of "supposed slow configuration branches hit" : "supposed fast configuration branches hit" 
+
+
 - [google/closure-compiler#2842](https://github.com/google/closure-compiler/issues/2842): IllegalStateException in VarCheck: Unexpected variable
 - [google/closure-compiler#2843](https://github.com/google/closure-compiler/issues/2843): NullPointerException when using Arrow Functions in dead code 
 - [google/closure-compiler#3173](https://github.com/google/closure-compiler/issues/3173): Algorithmic complexity / performance issue on fuzzed input
